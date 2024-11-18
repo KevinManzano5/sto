@@ -1,7 +1,11 @@
-import { CreateUserDto, LoginUserDto, UserEntity } from "../../domain";
-import { CustomError } from "../../domain/errors/custom.error";
-import { IAuthRepository } from "../../domain/repositories/IAuth.repository";
-import { AuthDatasource } from "../datasources/postgres.auth.datasource";
+import {
+  CreateUserDto,
+  CustomError,
+  IAuthRepository,
+  LoginUserDto,
+  UserEntity,
+} from "../../domain";
+import { AuthDatasource } from "../";
 
 export class AuthRepository implements IAuthRepository {
   constructor(public readonly authDatasource: AuthDatasource) {}

@@ -1,16 +1,28 @@
-import { CreateUserDto, LoginUserDto, UserEntity } from "../../domain";
-import { CustomError } from "../../domain/errors/custom.error";
-import { bcrypt } from "../adapters/bcrypt";
-import { AuthRepository } from "../repositories/auth.repository";
+import {
+  CreateUserDto,
+  CustomError,
+  LoginUserDto,
+  UserEntity,
+} from "../../domain";
+import { AuthRepository, bcrypt, Jwt } from "../";
 
 export class AuthService {
   constructor(public readonly authRepository: AuthRepository) {}
 
-  createUser = async (createUserDto: CreateUserDto): Promise<UserEntity> => {
+  createUser = async (
+    createUserDto: CreateUserDto
+  ): Promise<{ user: UserEntity; token: string }> => {
     createUserDto.password = bcrypt.hash(createUserDto.password);
 
     try {
-      return await this.authRepository.createUser(createUserDto);
+      const user = await this.authRepository.createUser(createUserDto);
+
+      const token = Jwt.sign({ id: user.id });
+
+      return {
+        user,
+        token,
+      };
     } catch (error: any) {
       if (error instanceof CustomError) throw error;
 
@@ -20,9 +32,18 @@ export class AuthService {
     }
   };
 
-  loginUser = async (loginUserDto: LoginUserDto): Promise<UserEntity> => {
+  loginUser = async (
+    loginUserDto: LoginUserDto
+  ): Promise<{ user: UserEntity; token: string }> => {
     try {
-      return await this.authRepository.loginUser(loginUserDto);
+      const user = await this.authRepository.loginUser(loginUserDto);
+
+      const token = Jwt.sign({ id: user.id });
+
+      return {
+        user,
+        token,
+      };
     } catch (error: any) {
       if (error instanceof CustomError) throw error;
 

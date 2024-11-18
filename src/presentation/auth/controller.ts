@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AuthService } from "../../infrastructure/services/auth.service";
+import { AuthService } from "../../infrastructure";
 import { CreateUserDto, LoginUserDto } from "../../domain";
 
 export class AuthController {

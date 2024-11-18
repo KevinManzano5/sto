@@ -1,9 +1,11 @@
 import { Router } from "express";
 
 import { AuthController } from "./controller";
-import { AuthService } from "../../infrastructure/services/auth.service";
-import { AuthRepository } from "../../infrastructure/repositories/auth.repository";
-import { AuthDatasource } from "../../infrastructure/datasources/postgres.auth.datasource";
+import {
+  AuthDatasource,
+  AuthService,
+  AuthRepository,
+} from "../../infrastructure";
 
 export class AuthRoutes {
   static get routes(): Router {
