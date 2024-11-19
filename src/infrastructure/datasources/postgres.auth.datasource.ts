@@ -1,8 +1,10 @@
-import { prisma } from "../../database/postgres";
-import { UserModel } from "../../database/postgres/models/user.model";
-import { CreateUserDto, LoginUserDto } from "../../domain";
-import { IAuthDatasource } from "../../domain/datasources/IAuth.datasource";
-import { CustomError } from "../../domain/errors/custom.error";
+import { prisma, UserModel } from "../../database";
+import {
+  CreateUserDto,
+  CustomError,
+  IAuthDatasource,
+  LoginUserDto,
+} from "../../domain";
 import { bcrypt } from "../adapters/bcrypt";
 
 export class AuthDatasource implements IAuthDatasource {
@@ -22,6 +24,8 @@ export class AuthDatasource implements IAuthDatasource {
   };
 
   loginUser = async (loginUserDto: LoginUserDto): Promise<UserModel> => {
+    // TODO: Separate business login from database layer
+
     const { email, password } = loginUserDto;
 
     try {
