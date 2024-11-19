@@ -24,8 +24,6 @@ export class AuthDatasource implements IAuthDatasource {
   };
 
   loginUser = async (loginUserDto: LoginUserDto): Promise<UserModel> => {
-    // TODO: Separate business login from database layer
-
     const { email, password } = loginUserDto;
 
     try {
@@ -41,6 +39,23 @@ export class AuthDatasource implements IAuthDatasource {
 
       return user;
     } catch (error: any) {
+      if (error instanceof CustomError) throw error;
+
+      console.error(error);
+
+      throw CustomError.internalServer("Internal server error");
+    }
+  };
+
+  findUser = async (id: string): Promise<UserModel> => {
+    try {
+      const user = await prisma.user.findFirst({ where: { id } });
+
+      if (!user || user.isActive === false)
+        throw CustomError.notFound(`User with id ${id} not found`);
+
+      return user;
+    } catch (error) {
       if (error instanceof CustomError) throw error;
 
       console.error(error);

@@ -37,4 +37,18 @@ export class AuthRepository implements IAuthRepository {
       throw CustomError.internalServer("Internal server error");
     }
   };
+
+  findUser = async (id: string): Promise<UserEntity> => {
+    try {
+      const user = await this.authDatasource.findUser(id);
+
+      return UserEntity.fromObject(user);
+    } catch (error) {
+      if (error instanceof CustomError) throw error;
+
+      console.error(error);
+
+      throw CustomError.internalServer("Internal server error");
+    }
+  };
 }

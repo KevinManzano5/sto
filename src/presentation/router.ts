@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { AuthRoutes } from "./auth/routes";
 import { CategoryRoutes } from "./category/routes";
-import { ProductRoutes } from "./products/routes";
+import { ProductRoutes } from "./product/routes";
 
 export class AppRouter {
   static get routes(): Router {

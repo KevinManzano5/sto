@@ -1,7 +1,8 @@
-import { UserModel } from "../../database/postgres/models/user.model";
+import { UserModel } from "../../database";
 import { CreateUserDto, LoginUserDto } from "../dtos";
 
 export interface IAuthDatasource {
   createUser: (createUserDto: CreateUserDto) => Promise<UserModel>;
-  loginUser: (loginUserDto: LoginUserDto) => void;
+  loginUser: (loginUserDto: LoginUserDto) => Promise<UserModel>;
+  findUser: (id: string) => Promise<UserModel>;
 }

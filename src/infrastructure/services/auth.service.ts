@@ -52,4 +52,8 @@ export class AuthService {
       throw CustomError.internalServer("Internal server error");
     }
   };
+
+  findUser = async (id: string): Promise<UserEntity> => {
+    return await this.authRepository.findUser(id);
+  };
 }

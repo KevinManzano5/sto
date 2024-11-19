@@ -1,13 +1,18 @@
 export class CreateCategoryDto {
-  private constructor(public readonly name: string) {}
+  private constructor(
+    public readonly name: string,
+    public readonly userId: string
+  ) {}
 
   static create({
     name,
+    userId,
   }: {
     [key: string]: any;
   }): [string?, CreateCategoryDto?] {
-    if (!name) return ["Name is required", undefined];
+    if (!name) return ["name is required", undefined];
+    if (!userId) return ["userId is required", undefined];
 
-    return [undefined, new CreateCategoryDto(name)];
+    return [undefined, new CreateCategoryDto(name, userId)];
   }
 }

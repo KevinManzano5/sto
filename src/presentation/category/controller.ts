@@ -16,7 +16,9 @@ export class CategoryController {
 
   public create = async (req: Request, res: Response) => {
     try {
-      const [error, createCategoryDto] = CreateCategoryDto.create(req.body);
+      const [error, createCategoryDto] = CreateCategoryDto.create({
+        ...req.body,
+      });
 
       if (error) return res.status(400).json({ error });
 
