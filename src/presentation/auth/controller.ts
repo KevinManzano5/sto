@@ -40,4 +40,14 @@ export class AuthController {
       this.handleError(error, res);
     }
   };
+
+  public profile = async (req: Request, res: Response) => {
+    try {
+      const user = await this.authService.findUser(req.body.userId);
+
+      return res.status(200).json(user);
+    } catch (error) {
+      this.handleError(error, res);
+    }
+  };
 }
