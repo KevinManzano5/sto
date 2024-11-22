@@ -19,11 +19,12 @@ export class AuthMiddleware {
 
       if (!payload) return res.status(401).json({ message: "Invalid token" });
 
-      const user = this.authService.findUser(payload.id);
+      const user = await this.authService.findUser(payload.id);
 
       if (!user) return res.status(401).json("Invalid token");
 
-      req.body.userId = (await user).id;
+      req.body.userId = user.id;
+      req.body.userRole = user.role;
 
       next();
     } catch (error: any) {

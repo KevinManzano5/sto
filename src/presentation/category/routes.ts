@@ -9,7 +9,7 @@ import {
   CategoryRepository,
   CategoryService,
 } from "../../infrastructure";
-import { AuthMiddleware } from "../middleware";
+import { AuthMiddleware, RoleMiddleware } from "../middleware";
 
 export class CategoryRoutes {
   static get routes(): Router {
@@ -20,6 +20,8 @@ export class CategoryRoutes {
     const authService = new AuthService(authRepository);
     const authMiddleware = new AuthMiddleware(authService);
 
+    const roleMiddleware = new RoleMiddleware();
+
     const categoryDatasource = new CategoryDatasource();
     const categoryRepository = new CategoryRepository(categoryDatasource);
     const categoryService = new CategoryService(categoryRepository);
@@ -27,13 +29,21 @@ export class CategoryRoutes {
 
     router.post(
       "/create",
-      [authMiddleware.validateToken],
+      [authMiddleware.validateToken, roleMiddleware.validateAdmin],
       categoryController.create
     );
     router.get("/", categoryController.getAll);
     router.get("/:id", categoryController.get);
-    router.put("/:id", categoryController.update);
-    router.delete("/:id", categoryController.delete);
+    router.put(
+      "/:id",
+      [authMiddleware.validateToken, roleMiddleware.validateAdmin],
+      categoryController.update
+    );
+    router.delete(
+      "/:id",
+      [authMiddleware.validateToken, roleMiddleware.validateAdmin],
+      categoryController.delete
+    );
 
     return router;
   }
