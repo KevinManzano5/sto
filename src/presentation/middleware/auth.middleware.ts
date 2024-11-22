@@ -26,8 +26,11 @@ export class AuthMiddleware {
       req.body.userId = (await user).id;
 
       next();
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.name === "TokenExpiredError")
+        return res.status(401).json({ message: "Token expired, use another" });
+
+      console.error({ error: JSON.stringify(error) });
 
       return res.status(500).json({ message: "Internal server error" });
     }
