@@ -28,7 +28,14 @@ export class AuthMiddleware {
       next();
     } catch (error: any) {
       if (error.name === "TokenExpiredError")
-        return res.status(401).json({ message: "Token expired, use another" });
+        return res
+          .status(401)
+          .json({ message: "Token expired, generate a new one" });
+
+      if (error.statusCode === 404)
+        return res.status(401).json({
+          message: "Invalid token, generate a new one",
+        });
 
       console.error({ error: JSON.stringify(error) });
 
