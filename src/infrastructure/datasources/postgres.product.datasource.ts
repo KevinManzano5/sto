@@ -1,5 +1,4 @@
-import { prisma } from "../../database/postgres";
-import { ProductModel } from "../../database/postgres/models/product.model";
+import { prisma, ProductModel } from "../../database/postgres";
 import {
   CreateProductDto,
   CustomError,

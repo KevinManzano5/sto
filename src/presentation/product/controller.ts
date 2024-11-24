@@ -32,9 +32,9 @@ export class ProductController {
 
   public getAll = async (req: Request, res: Response) => {
     try {
-      const categories = await this.productService.getAll();
+      const products = await this.productService.getAll();
 
-      return res.status(200).json(categories);
+      return res.status(200).json(products);
     } catch (error) {
       this.handleError(error, res);
     }
@@ -47,9 +47,9 @@ export class ProductController {
       return res.status(400).json({ message: `Id ${id} is not valid UUID` });
 
     try {
-      const category = await this.productService.get(id);
+      const product = await this.productService.get(id);
 
-      return res.status(200).json(category);
+      return res.status(200).json(product);
     } catch (error) {
       this.handleError(error, res);
     }
@@ -66,12 +66,12 @@ export class ProductController {
 
       if (error) return res.status(400).json({ error });
 
-      const updatedCategory = await this.productService.update(
+      const updatedProduct = await this.productService.update(
         id,
         updateProductDto!
       );
 
-      return res.status(200).json({ category: { ...updatedCategory } });
+      return res.status(200).json({ category: { ...updatedProduct } });
     } catch (error) {
       this.handleError(error, res);
     }

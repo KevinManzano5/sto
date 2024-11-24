@@ -1,14 +1,14 @@
 import {
   CreateUserDto,
   CustomError,
+  IAuthDatasource,
   IAuthRepository,
   LoginUserDto,
   UserEntity,
 } from "../../domain";
-import { AuthDatasource } from "../";
 
 export class AuthRepository implements IAuthRepository {
-  constructor(public readonly authDatasource: AuthDatasource) {}
+  constructor(public readonly authDatasource: IAuthDatasource) {}
 
   createUser = async (createUserDto: CreateUserDto): Promise<UserEntity> => {
     try {

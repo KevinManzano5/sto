@@ -1,3 +1,5 @@
+import { $Enums } from "@prisma/client";
+
 export interface UserModel {
   id: string;
   firstName: string;
@@ -5,6 +7,7 @@ export interface UserModel {
   email: string;
   password: string;
   isActive: boolean;
+  role: $Enums.Role;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,84 +1,103 @@
 import {
   CreateProductDto,
   CustomError,
+  IProductRepository,
   ProductEntity,
   UpdateProductDto,
 } from "../../domain";
-import { ProductRepository } from "../repositories";
+import { CategoryService } from "./category.service";
+import { StoreService } from "./store.service";
 
 export class ProductService {
-  constructor(public readonly productRepository: ProductRepository) {}
+  constructor(
+    private readonly productRepository: IProductRepository,
+    private readonly categoryService: CategoryService,
+    private readonly storeService: StoreService
+  ) {}
 
-  create = async (
-    createProductDto: CreateProductDto
-  ): Promise<ProductEntity> => {
+  private handleError = (error: any): never => {
+    if (error instanceof CustomError) throw error;
+
+    console.error(JSON.stringify(error));
+
+    throw CustomError.internalServer("Internal server error");
+  };
+
+  private mapProduct = (
+    product: ProductEntity,
+    categoryName: string,
+    storeName: string
+  ) => {
+    return {
+      id: product.id,
+      name: product.name,
+      isActive: product.isActive,
+      category: categoryName,
+      store: storeName,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+    };
+  };
+
+  create = async (createProductDto: CreateProductDto) => {
     try {
-      const product = await this.productRepository.create(createProductDto);
-
-      return product;
-    } catch (error) {
-      if (error instanceof CustomError) throw error;
-
-      console.error(error);
-
-      throw CustomError.internalServer("Internal server error");
+      return await this.productRepository.create(createProductDto);
+    } catch (error: any) {
+      return this.handleError(error);
     }
   };
 
-  get = async (id: string): Promise<ProductEntity> => {
+  get = async (id: string) => {
     try {
       const product = await this.productRepository.get(id);
 
-      return product;
-    } catch (error) {
-      if (error instanceof CustomError) throw error;
+      const [category, store] = await Promise.all([
+        this.categoryService.get(product.categoryId),
+        this.storeService.get(product.storeId),
+      ]);
 
-      console.error(error);
-
-      throw CustomError.internalServer("Internal server error");
+      return this.mapProduct(product, category.name, store.name);
+    } catch (error: any) {
+      this.handleError(error);
     }
   };
 
-  getAll = async (): Promise<ProductEntity[]> => {
+  getAll = async () => {
     try {
       const products = await this.productRepository.getAll();
 
-      return products;
-    } catch (error) {
-      if (error instanceof CustomError) throw error;
+      const mappedProducts = await Promise.all(
+        products.map(async (product) => {
+          const [category, store] = await Promise.all([
+            this.categoryService.get(product.categoryId),
+            this.storeService.get(product.storeId),
+          ]);
 
-      console.error(error);
+          return this.mapProduct(product, category.name, store.name);
+        })
+      );
 
-      throw CustomError.internalServer("Internal server error");
+      return mappedProducts;
+    } catch (error: any) {
+      this.handleError(error);
     }
   };
 
-  update = async (
-    id: string,
-    updateProductDto: UpdateProductDto
-  ): Promise<ProductEntity> => {
+  update = async (id: string, updateProductDto: UpdateProductDto) => {
     try {
       const product = await this.productRepository.update(id, updateProductDto);
 
-      return product;
-    } catch (error) {
-      if (error instanceof CustomError) throw error;
-
-      console.error(error);
-
-      throw CustomError.internalServer("Internal server error");
+      return await this.get(product.id);
+    } catch (error: any) {
+      return this.handleError(error);
     }
   };
 
-  delete = async (id: string): Promise<void> => {
+  delete = async (id: string) => {
     try {
       return await this.productRepository.delete(id);
-    } catch (error) {
-      if (error instanceof CustomError) throw error;
-
-      console.error(error);
-
-      throw CustomError.internalServer("Internal server error");
+    } catch (error: any) {
+      this.handleError(error);
     }
   };
 }

@@ -2,12 +2,12 @@ import {
   CategoryEntity,
   CreateCategoryDto,
   CustomError,
+  ICategoryRepository,
   UpdateCategoryDto,
 } from "../../domain";
-import { CategoryRepository } from "../repositories/category.repository";
 
 export class CategoryService {
-  constructor(public readonly categoryRepository: CategoryRepository) {}
+  constructor(public readonly categoryRepository: ICategoryRepository) {}
 
   create = async (
     createCategoryDto: CreateCategoryDto
