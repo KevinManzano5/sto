@@ -1,13 +1,13 @@
 import {
   CreateProductDto,
   CustomError,
+  IProductRepository,
   ProductEntity,
   UpdateProductDto,
 } from "../../domain";
-import { ProductRepository } from "../repositories";
 
 export class ProductService {
-  constructor(public readonly productRepository: ProductRepository) {}
+  constructor(public readonly productRepository: IProductRepository) {}
 
   create = async (
     createProductDto: CreateProductDto

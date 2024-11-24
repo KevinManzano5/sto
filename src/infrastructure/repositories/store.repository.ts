@@ -1,21 +1,20 @@
 import {
-  CategoryEntity,
-  CreateCategoryDto,
+  CreateStoreDto,
   CustomError,
-  ICategoryRepository,
-  UpdateCategoryDto,
+  IStoreDatasource,
+  IStoreRepository,
+  StoreEntity,
+  UpdateStoreDto,
 } from "../../domain";
 
-export class CategoryService {
-  constructor(public readonly categoryRepository: ICategoryRepository) {}
+export class StoreRepository implements IStoreRepository {
+  constructor(public readonly storeDatasource: IStoreDatasource) {}
 
-  create = async (
-    createCategoryDto: CreateCategoryDto
-  ): Promise<CategoryEntity> => {
+  create = async (createStoreDto: CreateStoreDto): Promise<StoreEntity> => {
     try {
-      const category = await this.categoryRepository.create(createCategoryDto);
+      const store = await this.storeDatasource.create(createStoreDto);
 
-      return category;
+      return StoreEntity.fromObject(store);
     } catch (error) {
       if (error instanceof CustomError) throw error;
 
@@ -25,9 +24,11 @@ export class CategoryService {
     }
   };
 
-  getAll = async (): Promise<CategoryEntity[]> => {
+  getAll = async (): Promise<StoreEntity[]> => {
     try {
-      return await this.categoryRepository.getAll();
+      const stores = await this.storeDatasource.getAll();
+
+      return stores.map((store) => StoreEntity.fromObject(store));
     } catch (error) {
       if (error instanceof CustomError) throw error;
 
@@ -37,9 +38,11 @@ export class CategoryService {
     }
   };
 
-  get = async (id: string): Promise<CategoryEntity> => {
+  get = async (id: string): Promise<StoreEntity> => {
     try {
-      return await this.categoryRepository.get(id);
+      const store = await this.storeDatasource.get(id);
+
+      return StoreEntity.fromObject(store);
     } catch (error) {
       if (error instanceof CustomError) throw error;
 
@@ -51,10 +54,17 @@ export class CategoryService {
 
   update = async (
     id: string,
-    updateCategoryDto: UpdateCategoryDto
-  ): Promise<CategoryEntity> => {
+    updateStoreDto: UpdateStoreDto
+  ): Promise<StoreEntity> => {
     try {
-      return await this.categoryRepository.update(id, updateCategoryDto);
+      await this.get(id);
+
+      const updatedStore = await this.storeDatasource.update(
+        id,
+        updateStoreDto
+      );
+
+      return StoreEntity.fromObject(updatedStore);
     } catch (error) {
       if (error instanceof CustomError) throw error;
 
@@ -68,7 +78,7 @@ export class CategoryService {
     try {
       await this.get(id);
 
-      return await this.categoryRepository.delete(id);
+      await this.storeDatasource.delete(id);
     } catch (error) {
       if (error instanceof CustomError) throw error;
 
