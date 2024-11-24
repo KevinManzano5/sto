@@ -52,6 +52,20 @@ export class StoreRepository implements IStoreRepository {
     }
   };
 
+  getStoreByUserId = async (userId: string): Promise<StoreEntity> => {
+    try {
+      const store = await this.storeDatasource.getStoreByUserId(userId);
+
+      return StoreEntity.fromObject(store);
+    } catch (error) {
+      if (error instanceof CustomError) throw error;
+
+      console.error(error);
+
+      throw CustomError.internalServer("Internal server error");
+    }
+  };
+
   update = async (
     id: string,
     updateStoreDto: UpdateStoreDto

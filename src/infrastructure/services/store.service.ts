@@ -51,6 +51,20 @@ export class StoreService {
     }
   };
 
+  getStoreByUserId = async (userId: string): Promise<StoreEntity> => {
+    try {
+      const store = await this.storeRepository.getStoreByUserId(userId);
+
+      return store;
+    } catch (error) {
+      if (error instanceof CustomError) throw error;
+
+      console.error(error);
+
+      throw CustomError.internalServer("Internal server error");
+    }
+  };
+
   update = async (
     id: string,
     updateStoreDto: UpdateStoreDto

@@ -1,18 +1,21 @@
 export class CreateProductDto {
   private constructor(
     public readonly name: string,
-    public readonly userId: string
+    public readonly categoryId: string,
+    public readonly storeId: string
   ) {}
 
   static create({
     name,
-    userId,
+    categoryId,
+    storeId,
   }: {
     [key: string]: any;
   }): [string?, CreateProductDto?] {
     if (!name) return ["name is required", undefined];
-    if (!userId) return ["userId is required", undefined];
+    if (!categoryId) return ["categoryId is required", undefined];
+    if (!storeId) return ["storeId is required", undefined];
 
-    return [undefined, new CreateProductDto(name, userId)];
+    return [undefined, new CreateProductDto(name, categoryId, storeId)];
   }
 }
