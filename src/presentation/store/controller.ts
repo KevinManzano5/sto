@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
 import { validate } from "uuid";
 
-import { ProductService } from "../../infrastructure";
-import { CreateProductDto, UpdateProductDto } from "../../domain";
+import { ProductService, StoreService } from "../../infrastructure";
+import {
+  CreateProductDto,
+  CreateStoreDto,
+  UpdateProductDto,
+  UpdateStoreDto,
+} from "../../domain";
 
-export class ProductController {
-  constructor(public readonly productService: ProductService) {}
+export class StoreController {
+  constructor(public readonly storeService: StoreService) {}
 
   private handleError = (error: any, res: Response) => {
     const statusCode = error.statusCode || 500;
@@ -16,15 +21,15 @@ export class ProductController {
 
   public create = async (req: Request, res: Response) => {
     try {
-      const [error, createProductDto] = CreateProductDto.create({
+      const [error, createStoreDto] = CreateStoreDto.create({
         ...req.body,
       });
 
       if (error) return res.status(400).json({ error });
 
-      const product = await this.productService.create(createProductDto!);
+      const store = await this.storeService.create(createStoreDto!);
 
-      return res.status(201).json(product);
+      return res.status(201).json(store);
     } catch (error) {
       this.handleError(error, res);
     }
@@ -32,9 +37,9 @@ export class ProductController {
 
   public getAll = async (req: Request, res: Response) => {
     try {
-      const products = await this.productService.getAll();
+      const stores = await this.storeService.getAll();
 
-      return res.status(200).json(products);
+      return res.status(200).json(stores);
     } catch (error) {
       this.handleError(error, res);
     }
@@ -47,9 +52,9 @@ export class ProductController {
       return res.status(400).json({ message: `Id ${id} is not valid UUID` });
 
     try {
-      const product = await this.productService.get(id);
+      const store = await this.storeService.get(id);
 
-      return res.status(200).json(product);
+      return res.status(200).json(store);
     } catch (error) {
       this.handleError(error, res);
     }
@@ -62,16 +67,13 @@ export class ProductController {
       return res.status(400).json({ message: `Id ${id} is not valid UUID` });
 
     try {
-      const [error, updateProductDto] = UpdateProductDto.create(req.body);
+      const [error, updateStoreDto] = UpdateStoreDto.create(req.body);
 
       if (error) return res.status(400).json({ error });
 
-      const updatedProduct = await this.productService.update(
-        id,
-        updateProductDto!
-      );
+      const updatedStore = await this.storeService.update(id, updateStoreDto!);
 
-      return res.status(200).json({ category: { ...updatedProduct } });
+      return res.status(200).json({ category: { ...updatedStore } });
     } catch (error) {
       this.handleError(error, res);
     }
@@ -84,7 +86,7 @@ export class ProductController {
       return res.status(400).json({ message: `Id ${id} is not valid UUID` });
 
     try {
-      await this.productService.delete(id);
+      await this.storeService.delete(id);
 
       return res.sendStatus(204);
     } catch (error) {

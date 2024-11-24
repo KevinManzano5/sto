@@ -4,5 +4,4 @@ export interface ProductModel {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
-  userId: string;
 }

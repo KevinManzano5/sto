@@ -1,13 +1,14 @@
 import {
   CreateUserDto,
   CustomError,
+  IAuthRepository,
   LoginUserDto,
   UserEntity,
 } from "../../domain";
-import { AuthRepository, bcrypt, Jwt } from "../";
+import { bcrypt, Jwt } from "../";
 
 export class AuthService {
-  constructor(public readonly authRepository: AuthRepository) {}
+  constructor(public readonly authRepository: IAuthRepository) {}
 
   createUser = async (
     createUserDto: CreateUserDto
