@@ -60,6 +60,23 @@ export class StoreDatasource implements IStoreDatasource {
     }
   };
 
+  getStoreByUserId = async (userId: string): Promise<StoreModel> => {
+    try {
+      const store = await prisma.store.findFirst({ where: { userId } });
+
+      if (!store || !store.isActive)
+        throw CustomError.notFound(`Store with userId ${userId} not found`);
+
+      return store;
+    } catch (error: any) {
+      if (error instanceof CustomError) throw error;
+
+      console.error(error);
+
+      throw CustomError.internalServer("Internal server error");
+    }
+  };
+
   update = async (
     id: string,
     updateStoreDto: UpdateStoreDto

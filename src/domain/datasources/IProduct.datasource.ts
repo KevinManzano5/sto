@@ -1,13 +1,13 @@
+import { ProductModel } from "../../database";
 import { CreateProductDto, UpdateProductDto } from "../dtos";
-import { ProductEntity } from "../entities";
 
 export interface IProductDatasource {
-  create: (createProductDto: CreateProductDto) => Promise<ProductEntity>;
-  getAll: () => Promise<ProductEntity[]>;
-  get: (id: string) => Promise<ProductEntity>;
+  create: (createProductDto: CreateProductDto) => Promise<ProductModel>;
+  getAll: () => Promise<ProductModel[]>;
+  get: (id: string) => Promise<ProductModel>;
   update: (
     id: string,
     updateProductDto: UpdateProductDto
-  ) => Promise<ProductEntity>;
+  ) => Promise<ProductModel>;
   delete: (id: string) => void;
 }
