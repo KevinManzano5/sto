@@ -1,38 +1,13 @@
 import { Router } from "express";
 
-import { ProductController } from "./controller";
-import {
-  AuthDatasource,
-  AuthRepository,
-  AuthService,
-  ProductDatasource,
-  ProductRepository,
-  ProductService,
-  StoreDatasource,
-  StoreRepository,
-  StoreService,
-} from "../../infrastructure";
-import { AuthMiddleware, StoreMiddleware } from "../middleware";
+import { configureDependencies } from "../../infrastructure";
 
 export class ProductRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const authDatasource = new AuthDatasource();
-    const authRepository = new AuthRepository(authDatasource);
-    const authService = new AuthService(authRepository);
-
-    const storeDatasource = new StoreDatasource();
-    const storeRepository = new StoreRepository(storeDatasource);
-    const storeService = new StoreService(storeRepository);
-
-    const authMiddleware = new AuthMiddleware(authService);
-    const storeMiddleware = new StoreMiddleware(storeService);
-
-    const productDatasource = new ProductDatasource();
-    const productRepository = new ProductRepository(productDatasource);
-    const productService = new ProductService(productRepository);
-    const productController = new ProductController(productService);
+    const { authMiddleware, productController, storeMiddleware } =
+      configureDependencies();
 
     router.post(
       "/create",
