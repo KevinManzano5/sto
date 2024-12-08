@@ -3,6 +3,7 @@ import {
   CustomError,
   IProductDatasource,
   IProductRepository,
+  PaginationDto,
   ProductEntity,
   UpdateProductDto,
 } from "../../domain";
@@ -26,9 +27,9 @@ export class ProductRepository implements IProductRepository {
     }
   };
 
-  getAll = async (): Promise<ProductEntity[]> => {
+  getAll = async (paginationDto: PaginationDto): Promise<ProductEntity[]> => {
     try {
-      const products = await this.productDatasource.getAll();
+      const products = await this.productDatasource.getAll(paginationDto);
 
       return products.map((product) => ProductEntity.fromObject(product));
     } catch (error) {

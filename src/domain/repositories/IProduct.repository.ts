@@ -1,9 +1,9 @@
-import { CreateProductDto, UpdateProductDto } from "../dtos";
+import { CreateProductDto, PaginationDto, UpdateProductDto } from "../dtos";
 import { ProductEntity } from "../entities";
 
 export interface IProductRepository {
   create: (createProductDto: CreateProductDto) => Promise<ProductEntity>;
-  getAll: () => Promise<ProductEntity[]>;
+  getAll: (paginationDto: PaginationDto) => Promise<ProductEntity[]>;
   get: (id: string) => Promise<ProductEntity>;
   update: (
     id: string,

@@ -2,6 +2,7 @@ import {
   CreateProductDto,
   CustomError,
   IProductRepository,
+  PaginationDto,
   ProductEntity,
   UpdateProductDto,
 } from "../../domain";
@@ -41,7 +42,14 @@ export class ProductService {
 
   create = async (createProductDto: CreateProductDto) => {
     try {
-      return await this.productRepository.create(createProductDto);
+      const product = await this.productRepository.create(createProductDto);
+
+      const [category, store] = await Promise.all([
+        this.categoryService.get(product.categoryId),
+        this.storeService.get(product.storeId),
+      ]);
+
+      return this.mapProduct(product, category.name, store.name);
     } catch (error: any) {
       return this.handleError(error);
     }
@@ -62,9 +70,9 @@ export class ProductService {
     }
   };
 
-  getAll = async () => {
+  getAll = async (paginationDto: PaginationDto) => {
     try {
-      const products = await this.productRepository.getAll();
+      const products = await this.productRepository.getAll(paginationDto);
 
       const mappedProducts = await Promise.all(
         products.map(async (product) => {
