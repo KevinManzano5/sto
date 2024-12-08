@@ -3,6 +3,7 @@ import {
   CreateProductDto,
   CustomError,
   IProductDatasource,
+  PaginationDto,
   UpdateProductDto,
 } from "../../domain";
 
@@ -26,11 +27,13 @@ export class ProductDatasource implements IProductDatasource {
     }
   };
 
-  getAll = async (): Promise<ProductModel[]> => {
+  getAll = async ({ limit, page }: PaginationDto): Promise<ProductModel[]> => {
     try {
-      const products = (await prisma.product.findMany()).filter(
-        (product) => product.isActive === true
-      );
+      const products: ProductModel[] = await prisma.product.findMany({
+        where: { isActive: true },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
 
       return products;
     } catch (error) {
