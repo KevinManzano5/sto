@@ -1,9 +1,9 @@
 import { ProductModel } from "../../database";
-import { CreateProductDto, UpdateProductDto } from "../dtos";
+import { CreateProductDto, PaginationDto, UpdateProductDto } from "../dtos";
 
 export interface IProductDatasource {
   create: (createProductDto: CreateProductDto) => Promise<ProductModel>;
-  getAll: () => Promise<ProductModel[]>;
+  getAll: (paginationDto: PaginationDto) => Promise<ProductModel[]>;
   get: (id: string) => Promise<ProductModel>;
   update: (
     id: string,

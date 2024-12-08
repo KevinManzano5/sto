@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import { validate } from "uuid";
 
 import { ProductService } from "../../infrastructure";
-import { CreateProductDto, UpdateProductDto } from "../../domain";
+import {
+  CreateProductDto,
+  PaginationDto,
+  UpdateProductDto,
+} from "../../domain";
 
 export class ProductController {
   constructor(public readonly productService: ProductService) {}
@@ -31,10 +35,22 @@ export class ProductController {
   };
 
   public getAll = async (req: Request, res: Response) => {
-    try {
-      const products = await this.productService.getAll();
+    const { limit = 10, page = 1 } = req.query;
 
-      return res.status(200).json(products);
+    const [error, paginationDto] = PaginationDto.create(+limit, +page);
+
+    if (error) return res.status(400).json({ error });
+
+    try {
+      const products = await this.productService.getAll(paginationDto!);
+
+      const metadata = {
+        totalResults: products!.length,
+        page: +page,
+        limit: +limit,
+      };
+
+      return res.status(200).json({ metadata, products });
     } catch (error) {
       this.handleError(error, res);
     }
